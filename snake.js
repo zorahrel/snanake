@@ -1,6 +1,7 @@
 var foods = [];
 var s = new Snake();
 var paused = false;
+var bestScore = 0;
 
 function setup() {
     pixelUnit = 30;
@@ -52,7 +53,7 @@ function draw() {
 
 function mouseClicked() {
     if(focused) {
-        s.level = s.level+1;
+        s.setLevel(s.level+1);
         console.log('level up, now your level is: ', s.level);
     }
 }
@@ -191,8 +192,13 @@ function Snake() {
                 foods.splice(index, 1);
             }
         });
-        this.level = lev;
+        this.setLevel(lev);
         return false;
+    }
+
+    this.setLevel = function(level) {
+        s.level = level;
+        bestScore = (bestScore>level)?bestScore:level;
     }
 
     this.eatHimSelf = function() {
@@ -219,6 +225,7 @@ function Snake() {
 
     this.score = function() {
         document.getElementById('score').innerHTML = 'Score: '+this.level;
+        document.getElementById('bestscore').innerHTML = 'Best Score: '+bestScore;
     }
 
     this.dir = function(xSpeed, ySpeed) {
