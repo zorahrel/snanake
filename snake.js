@@ -166,7 +166,7 @@ function Snake() {
     this.eatHimSelf = function() {
         var lev = this.level;
         var tails = this.tails;
-        for(var i=0; i<tails.length; i++) {
+        for(var i=0; i<tails.length-1; i++) {
             if(i==0) {
                 continue;
             }
