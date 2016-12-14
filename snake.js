@@ -10,7 +10,7 @@ function setup() {
     createCanvas(width, height);
 
     generateFood();
-    frameRate(1);
+    frameRate(8);
     s = new Snake();
 }
 
@@ -149,19 +149,21 @@ function Snake() {
         var lev = this.level;
         var tails = this.tails;
         for(var i=0; i<tails.length; i++) {
-            console.log(i);
             if(i==0) {
                 continue;
             }
             if(tails[i].x == this.x && tails[i].y == this.y) {
+                for(var iB = i; iB<lev;iB++){
+                    tails = tails.splice(0, iB);
+                }
                 lev = i;
-                tails = tails.splice(i);
                 console.log('cazo');
                 break;
             }
         }
         this.tails = tails;
         this.level = lev;
+        
         return false;
     }
 
