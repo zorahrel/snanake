@@ -1,4 +1,5 @@
 var foods = [];
+var s = new Snake();
 
 function setup() {
     pixelUnit = 30;
@@ -11,7 +12,6 @@ function setup() {
 
     generateFood();
     frameRate(8);
-    s = new Snake();
 }
 
 function draw() {
@@ -22,9 +22,10 @@ function draw() {
     s.eatHimSelf();
     s.score();
 }
+
 function mouseClicked() {
     s.level = s.level+1;
-    console.log('lup')
+    console.log('level up, now your level is: ', s.level);
 }
 
 function keyPressed() {
@@ -45,14 +46,31 @@ function keyPressed() {
 }
 
 function generateFood() {
+    do {
+        food = randomPos();
+    } while(collideSnake(food, s));
+    foods.push(food);
+}
+
+function collideSnake(pos, snake) {
+    var collides = false;
+    snake.tails.forEach(function(tail) {
+        if(pos.x == tail.x && pos.y == tail.y) {
+            collides = true;
+        }
+    });
+
+    return collides;
+}
+
+function randomPos() {
     var cols = floor(width/pixelUnit);
     var rows = floor(width/pixelUnit);
-
-    food = {
+    
+    return {
         x: floor(random(cols))*pixelUnit,
         y: floor(random(rows))*pixelUnit
     };
-    foods.push(food);
 }
 
 function Snake() {
@@ -105,7 +123,7 @@ function Snake() {
             if(index+1 == tails.length && tails.length>1) { // Coda
                 type = 'tail';
             }
-            if(index == 0 && index+1 == tails.length) {
+            if(index == 0 && index+1 == tails.length) { // Pezzo unico
                 type = 'one';
             }
             
@@ -153,11 +171,11 @@ function Snake() {
                 continue;
             }
             if(tails[i].x == this.x && tails[i].y == this.y) {
-                for(var iB = i; iB<lev;iB++){
+                for(var iB = i; iB<lev; iB++) {
                     tails = tails.splice(0, iB);
                 }
                 lev = i;
-                console.log('cazo');
+                console.log('cazz, megg magnat a cor');
                 break;
             }
         }
