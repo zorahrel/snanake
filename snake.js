@@ -1,17 +1,34 @@
 var foods = [];
 var s = new Snake();
+var paused = false;
 
 function setup() {
     pixelUnit = 30;
+    rateOfFrames = 8;
     baseSpeed = pixelUnit;
 
     var width = pixelUnit * 15;
     var height = pixelUnit * 15;
 
-    createCanvas(width, height);
+    var stage = createCanvas(width, height);
+    stage.parent('stage');
 
     generateFood();
-    frameRate(8);
+    frameRate(rateOfFrames);
+
+    document.getElementById('pause').addEventListener('click', pause);
+}
+
+function pause() {
+    if(paused) {
+        loop();
+        paused = false;
+        console.log('Unpaused');
+    } else {
+        noLoop();
+        paused = true;
+        console.log('Paused');
+    }
 }
 
 function draw() {
@@ -21,11 +38,23 @@ function draw() {
     s.eat();
     s.eatHimSelf();
     s.score();
+
+    if(paused) {
+        fill(255,255, 255);
+        textSize(50);
+        textAlign(CENTER);
+        text("Paused", width/2, height/2);
+        fill('rgba(255,255,255, 0.5)');
+        rect(0, 0, width, height);
+    }
+        
 }
 
 function mouseClicked() {
-    s.level = s.level+1;
-    console.log('level up, now your level is: ', s.level);
+    if(focused) {
+        s.level = s.level+1;
+        console.log('level up, now your level is: ', s.level);
+    }
 }
 
 function keyPressed() {
@@ -41,6 +70,9 @@ function keyPressed() {
         break;
         case LEFT_ARROW:
             s.dir(-baseSpeed, 0);
+        break;
+        case 80: // Letter P
+            pause();
         break;
     }
 }
