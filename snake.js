@@ -34,6 +34,7 @@ function pause() {
 
 function draw() {
     background(0);
+    s.scrollingCamera();
     s.update();
     s.show();
     s.eat();
@@ -123,6 +124,10 @@ function Snake() {
     this.level = 0;
     this.tails = [];
     
+    this.scrollingCamera = function(){
+        translate(-this.x+(width/2), -this.y+(height/2));   
+    }
+    
     this.update = function() {
         for(var i=this.level; i>0; i--) {
             this.tails[i] = this.tails[i-1];
@@ -152,8 +157,6 @@ function Snake() {
                 this.y = 0;
             }
         }
-        console.log('x:' +this.x+ '; y:'+this.y);
-        translate(-this.x+(width/2), -this.y+(height/2));
     }
 
     this.show = function() {
