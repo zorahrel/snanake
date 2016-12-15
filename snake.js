@@ -5,17 +5,17 @@ var bestScore = 0;
 
 function setup() {
     pixelUnit = 30;
-    rateOfFrames = 8;
+    gamespeed = 8;
     baseSpeed = pixelUnit;
 
-    var width = pixelUnit * 15;
-    var height = pixelUnit * 15;
+    var width = pixelUnit * 36; //1080
+    var height = pixelUnit * 20; //600
 
     var stage = createCanvas(width, height);
     stage.parent('stage');
 
     generateFood();
-    frameRate(rateOfFrames);
+    frameRate(gamespeed);
 
     document.getElementById('pause').addEventListener('click', pause);
 }
@@ -40,6 +40,15 @@ function draw() {
     s.eatHimSelf();
     s.score();
 
+    /* create border game line */
+    noFill();
+    strokeWeight(1);
+    stroke(255);
+    rect(-1,-1, width+1, height+1);
+
+    stroke(0); //reset bordo nero
+
+    
     if(paused) {
         fill(255,255, 255);
         textSize(50);
@@ -98,7 +107,7 @@ function collideSnake(pos, snake) {
 
 function randomPos() {
     var cols = floor(width/pixelUnit);
-    var rows = floor(width/pixelUnit);
+    var rows = floor(height/pixelUnit);
     
     return {
         x: floor(random(cols))*pixelUnit,
@@ -143,6 +152,8 @@ function Snake() {
                 this.y = 0;
             }
         }
+        console.log('x:' +this.x+ '; y:'+this.y);
+        translate(-this.x+(width/2), -this.y+(height/2));
     }
 
     this.show = function() {
