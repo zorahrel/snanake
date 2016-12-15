@@ -2,21 +2,26 @@ var foods = [];
 var s = new Snake();
 var paused = false;
 var bestScore = 0;
+var gameWidth;
+var gameHeight;
 
 function setup() {
     pixelUnit = 30;
     gamespeed = 8;
     baseSpeed = pixelUnit;
-
+    /* dimensione del canvas */
     var width = pixelUnit * 36; //1080
     var height = pixelUnit * 20; //600
+
+    /* dimensione del game level */
+    gameWidth = pixelUnit * 72; 
+    gameHeight = pixelUnit * 40; 
 
     var stage = createCanvas(width, height);
     stage.parent('stage');
 
     generateFood();
     frameRate(gamespeed);
-
     document.getElementById('pause').addEventListener('click', pause);
 }
 
@@ -34,8 +39,12 @@ function pause() {
 
 function draw() {
     background(0);
+    
     s.scrollingCamera();
+    var pauseX = s.x; var pauseY = s.y; // mantengo salvata la posizione del verme prima dell'update per centrale la modale della pausa
     s.update();
+    
+    
     s.show();
     s.eat();
     s.eatHimSelf();
@@ -45,20 +54,10 @@ function draw() {
     noFill();
     strokeWeight(1);
     stroke(255);
-    rect(-1,-1, width+1, height+1);
+    rect(-1,-1, gameWidth+1, gameHeight+1);
+    stroke(0); //reset bordo nero      
 
-    stroke(0); //reset bordo nero
-
-    
-    if(paused) {
-        fill(255,255, 255);
-        textSize(50);
-        textAlign(CENTER);
-        text("Paused", width/2, height/2);
-        fill('rgba(255,255,255, 0.5)');
-        rect(0, 0, width, height);
-    }
-        
+    s.pauseModal(pauseX, pauseY);
 }
 
 function mouseClicked() {
@@ -107,8 +106,8 @@ function collideSnake(pos, snake) {
 }
 
 function randomPos() {
-    var cols = floor(width/pixelUnit);
-    var rows = floor(height/pixelUnit);
+    var cols = floor(gameWidth/pixelUnit);
+    var rows = floor(gameHeight/pixelUnit);
     
     return {
         x: floor(random(cols))*pixelUnit,
@@ -127,36 +126,54 @@ function Snake() {
     this.scrollingCamera = function(){
         translate(-this.x+(width/2), -this.y+(height/2));   
     }
+
+    this.pauseModal = function(x, y){
+        if(paused) {
+            
+            fill('rgba(255,255,255, 0.5)');
+            
+            rect(x-(width/2), y-(height/2), width, height);
+            fill(0,255, 0);
+            textSize(30);
+            textAlign(LEFT);
+            text("Game is paused", x-(width/2)+30, y+(height/2)-30);
+        }
+    }
     
     this.update = function() {
+        
+
         for(var i=this.level; i>0; i--) {
             this.tails[i] = this.tails[i-1];
         }
         this.tails[0] = { x: this.x, y: this.y };
 
+        
+        
         var newX = this.x + this.xSpeed;
-        if(newX < width && newX > -pixelUnit) {
+        if(newX < gameWidth && newX > -pixelUnit) {
             this.x = newX;
         } else {
             if(newX < 0) {
-                this.x = width-pixelUnit;
+                this.x = gameWidth-pixelUnit;
             }
-            if(newX+pixelUnit > width) {
+            if(newX+pixelUnit > gameWidth) {
                 this.x = 0;
             }
         }
         
         var newY = this.y + this.ySpeed;
-        if(newY < height && newY > -pixelUnit) {
+        if(newY < gameHeight && newY > -pixelUnit) {
             this.y = newY;
         } else {
             if(newY < 0) {
-                this.y = height-pixelUnit;
+                this.y = gameHeight-pixelUnit;
             }
-            if(newY+pixelUnit > height) {
+            if(newY+pixelUnit > gameHeight) {
                 this.y = 0;
             }
         }
+        
     }
 
     this.show = function() {
