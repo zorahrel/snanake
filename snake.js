@@ -23,14 +23,10 @@ function Snake() {
     }
     
     this.update = function() {
-        
-
         for(var i=this.level; i>0; i--) {
             this.tails[i] = this.tails[i-1];
         }
         this.tails[0] = { x: this.x, y: this.y };
-
-        
         
         var newX = this.x + this.xSpeed;
         if(newX < gameWidth && newX > -pixelUnit) {
@@ -79,7 +75,7 @@ function Snake() {
                 break;
                 case 'body':
                 case 'tail':
-                    fill(0,0,0);
+                    fill(100,0,100);
                 break;
                 case 'one':
                     fill(255,255,0);

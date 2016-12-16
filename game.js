@@ -10,8 +10,8 @@ function setup() {
     gamespeed = 8;
     baseSpeed = pixelUnit;
     /* dimensione del canvas */
-    var width = displayWidth;
-    var height = displayHeight - 234; // Aggiustamento per i div pausa e score
+    var width = windowWidth;
+    var height = windowHeight;
 
     /* dimensione del game level */
     gameWidth = pixelUnit * 72; 
@@ -23,6 +23,10 @@ function setup() {
     generateFood();
     frameRate(gamespeed);
     document.getElementById('pause').addEventListener('click', pause);
+}
+
+function windowResized() {
+	resizeCanvas(windowWidth, windowHeight);
 }
 
 function pause() {
