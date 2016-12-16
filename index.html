@@ -4,16 +4,20 @@
         <title>Snake</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="game.css">
     </head>
-    <body style="margin:0;">
-        <div id="upperScreen" style="height:40px;padding:5px;">
-		    <div id="score">Score: 0</div>
-		    <div id="bestscore">Best Score: 0</div>
+    <body>
+        <div class="over">
+            <div class="top">
+                <div id="score">Score: 0</div>
+                <div id="bestscore">Best Score: 0</div>
+            </div>
+
+            <div class="bottom">
+                <button id="pause">pause</button> or P
+            </div>
         </div>
         <div id="stage"></div>
-        <div id="lowerScreen" style="height:40px; padding:5px;">
-		    <button id="pause">pause</button> or P
-        </div>
     	<script src="snake.js"></script>
     	<script src="game.js"></script>
     	<script src="p5.min.js"></script>
