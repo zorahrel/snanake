@@ -38,10 +38,11 @@ function pause() {
 }
 
 function draw() {
-    background(0);
+    background(255);
     
     s.scrollingCamera();
-    var pauseX = s.x; var pauseY = s.y; // mantengo salvata la posizione del verme prima dell'update per centrale la modale della pausa
+    var pauseX = s.x;
+    var pauseY = s.y; // mantengo salvata la posizione del verme prima dell'update per centrale la modale della pausa
     s.update();
     
     
@@ -53,7 +54,7 @@ function draw() {
     /* create border game line */
     noFill();
     strokeWeight(1);
-    stroke(255);
+    stroke(0);
     rect(-1,-1, gameWidth+1, gameHeight+1);
     stroke(0); //reset bordo nero      
 
@@ -127,9 +128,8 @@ function Snake() {
         translate(-this.x+(width/2), -this.y+(height/2));   
     }
 
-    this.pauseModal = function(x, y){
+    this.pauseModal = function(x, y) {
         if(paused) {
-            
             fill('rgba(255,255,255, 0.5)');
             
             rect(x-(width/2), y-(height/2), width, height);
@@ -197,7 +197,7 @@ function Snake() {
                 break;
                 case 'body':
                 case 'tail':
-                    fill(255,255,255);
+                    fill(0,0,0);
                 break;
                 case 'one':
                     fill(255,255,0);
