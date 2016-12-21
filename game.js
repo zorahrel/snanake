@@ -20,7 +20,9 @@ function setup() {
     var stage = createCanvas(width, height);
     stage.parent('stage');
 
-    generateFood();
+    for(let i = 0; i<10; i++) {
+        generateFood();
+    }
     frameRate(gamespeed);
     document.getElementById('pause').addEventListener('click', pause);
 }
