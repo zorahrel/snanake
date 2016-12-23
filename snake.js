@@ -68,18 +68,13 @@ function Snake() {
             rect(tail.x, tail.y, pixelUnit, pixelUnit);
         });
         this.tails = tails;
-
-        foods.forEach(function(food) {
-            fill(0, 255, 0);
-            rect(food.x, food.y, pixelUnit, pixelUnit);
-        }, this);
     }
     
     this.eat = function() {
         pos = { x: this.x, y: this.y };
         lev = this.level;
         foods.forEach(function(food, index) {
-            if(food.x == pos.x && food.y == pos.y) {
+            if(food.position.x == pos.x && food.position.y == pos.y) {
                 lev = lev+1;
                 generateFood();
                 foods.splice(index, 1);
@@ -123,10 +118,9 @@ function Snake() {
 
     this.dir = function(xSpeed, ySpeed) {
         if(xSpeed*this.xSpeed == 0 || this.level==0) {
-            this.xSpeed = xSpeed;
+            this.xSpeed = xSpeed*this.speed;
         }
         if(ySpeed*this.ySpeed == 0 || this.level==0) {
-            this.ySpeed = ySpeed;   
         }
     }
 }

@@ -1,7 +1,7 @@
-var foods = [];
 var s = new Snake();
 var paused = false;
 var bestScore = 0;
+
 var gameWidth;
 var gameHeight;
 
@@ -20,9 +20,7 @@ function setup() {
     var stage = createCanvas(width, height);
     stage.parent('stage');
 
-    for(let i = 0; i<10; i++) {
-        generateFood();
-    }
+    generateFoods();
     frameRate(gamespeed);
     document.getElementById('pause').addEventListener('click', pause);
 }
@@ -51,8 +49,12 @@ function draw() {
 
     scrollingCamera(s.x, s.y);
 
+
     s.update();
+
     s.show();
+    showFood();
+
     s.eat();
     s.eatHimSelf();
     s.score();
@@ -96,13 +98,6 @@ function keyPressed() {
             pause();
         break;
     }
-}
-
-function generateFood() {
-    do {
-        food = randomPos();
-    } while(collideSnake(food, s));
-    foods.push(food);
 }
 
 function collideSnake(pos, snake) {
