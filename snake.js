@@ -3,7 +3,8 @@ function Snake() {
     this.y = 0;
     this.xSpeed = 0;
     this.ySpeed = 0;
-    this.speed = 1;
+    this.initialSpeed = 1;
+    this.speed = this.initialSpeed;
     this.level = 0;
     this.tails = [];
     
@@ -12,8 +13,8 @@ function Snake() {
             this.tails[i] = this.tails[i-1];
         }
         this.tails[0] = { x: this.x, y: this.y };
-        
-        var newX = this.x + this.xSpeed;
+
+        var newX = this.x + (this.xSpeed*this.speed);
         if(newX < gameWidth && newX > -pixelUnit) {
             this.x = newX;
         } else {
@@ -25,7 +26,7 @@ function Snake() {
             }
         }
         
-        var newY = this.y + this.ySpeed;
+        var newY = this.y + (this.ySpeed*this.speed);
         if(newY < gameHeight && newY > -pixelUnit) {
             this.y = newY;
         } else {
@@ -74,11 +75,23 @@ function Snake() {
     this.eat = function() {
         pos = { x: this.x, y: this.y };
         lev = this.level;
+        var snake = this;
         foods.forEach(function(food, index) {
             if(food.position.x == pos.x && food.position.y == pos.y) {
-                lev = lev+1;
-                generateFood();
+                console.log(food.type);
+                switch(food.type) {
+                    case 'normal':
+                        lev = lev+1;
+                    break;
+                    case 'speed':
+                        frameRate(gamespeed*=1.5);
+                        setTimeout(function() {
+                            frameRate(gamespeed/=1.5);
+                        }, 4000)
+                    break;
+                }
                 foods.splice(index, 1);
+                generateFood();
             }
         });
         this.setLevel(lev);
@@ -119,10 +132,10 @@ function Snake() {
 
     this.dir = function(xSpeed, ySpeed) {
         if(xSpeed*this.xSpeed == 0 || this.level==0) {
-            this.xSpeed = xSpeed*this.speed;
+            this.xSpeed = xSpeed;
         }
         if(ySpeed*this.ySpeed == 0 || this.level==0) {
-            this.ySpeed = ySpeed*this.speed;   
+            this.ySpeed = ySpeed;   
         }
     }
 }

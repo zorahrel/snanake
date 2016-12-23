@@ -1,13 +1,14 @@
 var s = new Snake();
 var paused = false;
 var bestScore = 0;
+var initialGamespeed = 8;
 
 var gameWidth;
 var gameHeight;
 
 function setup() {
     pixelUnit = 30;
-    gamespeed = 8;
+    gamespeed = initialGamespeed;
     baseSpeed = pixelUnit;
     /* dimensione del canvas */
     var width = windowWidth;
