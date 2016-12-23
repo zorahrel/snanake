@@ -45,13 +45,13 @@ function pause() {
 
 function draw() {
     background(255);
-    
-    s.scrollingCamera();
+
     var pauseX = s.x;
     var pauseY = s.y; // mantengo salvata la posizione del verme prima dell'update per centrale la modale della pausa
+
+    scrollingCamera(s.x, s.y);
+
     s.update();
-    
-    
     s.show();
     s.eat();
     s.eatHimSelf();
@@ -64,7 +64,11 @@ function draw() {
     rect(-1,-1, gameWidth+1, gameHeight+1);
     stroke(0); //reset bordo nero      
 
-    s.pauseModal(pauseX, pauseY);
+    pauseModal(pauseX, pauseY);
+}
+
+function scrollingCamera(x, y) {
+    translate(-x+(width/2), -y+(height/2));   
 }
 
 function mouseClicked() {
@@ -120,4 +124,16 @@ function randomPos() {
         x: floor(random(cols))*pixelUnit,
         y: floor(random(rows))*pixelUnit
     };
+}
+
+function pauseModal(x, y) {
+    if(paused) {
+        fill('rgba(255,255,255, 0.5)');
+        
+        rect(x-(width/2), y-(height/2), width, height);
+        fill(0,255, 0);
+        textSize(30);
+        textAlign(RIGHT);
+        text("Game is paused", x+(width/2)-30, y+(height/2)-30);
+    }
 }

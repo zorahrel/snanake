@@ -6,22 +6,6 @@ function Snake() {
     this.level = 0;
     this.tails = [];
     
-    this.scrollingCamera = function(){
-        translate(-this.x+(width/2), -this.y+(height/2));   
-    }
-
-    this.pauseModal = function(x, y) {
-        if(paused) {
-            fill('rgba(255,255,255, 0.5)');
-            
-            rect(x-(width/2), y-(height/2), width, height);
-            fill(0,255, 0);
-            textSize(30);
-            textAlign(LEFT);
-            text("Game is paused", x-(width/2)+30, y+(height/2)-30);
-        }
-    }
-    
     this.update = function() {
         for(var i=this.level; i>0; i--) {
             this.tails[i] = this.tails[i-1];
