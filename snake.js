@@ -3,6 +3,7 @@ function Snake() {
     this.y = 0;
     this.xSpeed = 0;
     this.ySpeed = 0;
+    this.speed = 1;
     this.level = 0;
     this.tails = [];
     
@@ -121,6 +122,7 @@ function Snake() {
             this.xSpeed = xSpeed*this.speed;
         }
         if(ySpeed*this.ySpeed == 0 || this.level==0) {
+            this.ySpeed = ySpeed*this.speed;   
         }
     }
 }
