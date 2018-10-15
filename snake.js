@@ -42,6 +42,7 @@ function Snake() {
 
     this.show = function() {
         fill(255);
+        var that = this;
         var tails = this.tails;
         tails.forEach(function(tail, index) {
             var type = 'body';
@@ -55,6 +56,7 @@ function Snake() {
                 type = 'one';
             }
             
+            // Body draw
             switch(type) {
                 case 'head':
                     fill(255,0,0);
@@ -68,6 +70,21 @@ function Snake() {
                 break;
             }
             rect(tail.x, tail.y, pixelUnit, pixelUnit);
+            
+            // Eyes draw
+            if (type === 'head' || type === 'one') {
+                var leftEyeOffset = {};
+                var rightEyeOffset = {};
+                
+                leftEyeOffset.y = that.ySpeed > 0 ? 2/3 : 1/3;
+                rightEyeOffset.y = that.ySpeed >= 0 ? 2/3 : 1/3;
+                leftEyeOffset.x = that.xSpeed > 0 ? 2/3 : 1/3;
+                rightEyeOffset.x = that.xSpeed >= 0 ? 2/3 : 1/3;
+
+                fill(0);
+                ellipse(tail.x + pixelUnit*leftEyeOffset.x, tail.y + pixelUnit*leftEyeOffset.y, 3, 3);
+                ellipse(tail.x + pixelUnit*rightEyeOffset.x, tail.y + pixelUnit*rightEyeOffset.y, 3, 3);
+            }
         });
         this.tails = tails;
     }
