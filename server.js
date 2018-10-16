@@ -57,7 +57,7 @@ io.sockets.on('connection',
     socket.on('disconnect', function() {
       for (var i = 0; i < snakes.length; i++) {
         if (snakes[i].id == socket.id ) {
-          snakes.slice(i, 1);
+          snakes.splice(i, 1);
         }
       }
       console.log("Client has disconnected");
