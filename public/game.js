@@ -27,8 +27,9 @@ function setup() {
   frameRate(gamespeed);
 
   socket = io.connect('http://localhost:3000');
-  snake = new Snake(random(width), random(height), [], 1, 0, 0);
-  //generateFoods();
+
+  var snakePos = randomPos();
+  snake = new Snake(snakePos.x, snakePos.y, [], 1, 0, 0);
 
   //document.getElementById('pause').addEventListener('click', pause);
   var data = {
@@ -47,7 +48,7 @@ function setup() {
       gameState.foods = data.foods;
     }
   );
-  /*
+  
   socket.on('requestingRandomPos',
     function () {
       do {
@@ -55,7 +56,7 @@ function setup() {
       } while (collideSnake(foodPos, gameState.snakes));
       socket.emit('randomPos', foodPos);
     });
-    */
+  
 }
 
 function windowResized() {
@@ -187,7 +188,15 @@ function mouseClicked() {
     }
 }
 
+function randomPos() {
+  var cols = Math.floor(gameWidth / pixelUnit);
+  var rows = Math.floor(gameHeight / pixelUnit);
 
+  return {
+    x: Math.floor(random(cols)) * pixelUnit,
+    y: Math.floor(random(rows)) * pixelUnit
+  };
+}
 /*
 function collideSnake(pos, snakes) {
   var collides = false;
@@ -200,17 +209,9 @@ function collideSnake(pos, snakes) {
   });
   return collides;
 }
+*/
 
-function randomPos() {
-  var cols = floor(gameWidth / pixelUnit);
-  var rows = floor(gameHeight / pixelUnit);
-
-  return {
-    x: floor(random(cols)) * pixelUnit,
-    y: floor(random(rows)) * pixelUnit
-  };
-}
-
+/*
 function pauseModal(x, y) {
     if (paused) {
         fill('rgba(255,255,255, 0.5)');

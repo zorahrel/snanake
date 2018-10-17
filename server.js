@@ -1,10 +1,24 @@
 var gameState = { snakes: [], foods: [] };
 
-var foodOnStage = 1;
+var foodOnStage = 20;
 var foodTypes = ['normal', 'speed'];
+
+/* might need to sync those values between clients and server */
+var pixelUnit = 30;
+var gameWidth = pixelUnit * 72;
+var gameHeight = pixelUnit * 40;
 
 function getRandomFoodType() {
   return foodTypes[Math.floor(Math.random() * foodTypes.length)];
+}
+
+function randomPos() {
+  var cols = Math.floor(gameWidth / pixelUnit);
+  var rows = Math.floor(gameHeight / pixelUnit);
+  return {
+    x: Math.floor((Math.random() * cols)) * pixelUnit,
+    y: Math.floor((Math.random() * rows)) * pixelUnit
+  };
 }
 
 function Food(type, x, y) {
@@ -39,23 +53,30 @@ app.use(express.static('public'));
 var io = require('socket.io')(server);
 
 setInterval(heartbeat, 33);
-
 function heartbeat() {
   io.sockets.emit('heartbeat', gameState);
 }
 /*
 setInterval(logging, 5000);
-function logging() {console.log(gameState.foods)}
+function logging() {
+  var bom = randomPos();
+  console.log(bom);
+}
 */
-setInterval(generateFoods, 1000);
 
+setInterval(generateFoods, 1000);
 function generateFoods() {
   for(var i = 0; i<foodOnStage; i++) {
       if(gameState.foods.length < foodOnStage) {
-        io.sockets.emit('requestingRandomPos', /**/);
+        var np = randomPos();
+        //console.log(newrandomfoodpos);
+        var food = new Food(getRandomFoodType(), np.x, np.y);
+        gameState.foods.push(food);
       }
   }
 }
+
+
 
 io.sockets.on('connection',
   function(socket) {
@@ -67,12 +88,6 @@ io.sockets.on('connection',
         gameState.snakes.push(snake);
       }
     );
-
-    socket.on('randomPos', function(pos) {
-      console.log('ho ricevuto una pos');
-      var food = new Food(getRandomFoodType(), pos.x, pos.y);
-      gameState.foods.push(food);
-    })
 
     socket.on('updateSnake',
       function(data) {
@@ -101,3 +116,13 @@ io.sockets.on('connection',
     });
   }
 );
+
+function randomPos() {
+  var cols = Math.floor(gameWidth / pixelUnit);
+  var rows = Math.floor(gameHeight / pixelUnit);
+  //console.log((Math.random() * cols) + 1);
+  return {
+    x: Math.floor((Math.random() * cols)) * pixelUnit,
+    y: Math.floor((Math.random() * rows)) * pixelUnit
+  };
+}
