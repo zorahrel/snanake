@@ -165,8 +165,8 @@ function draw() {
   }
 
   var data = {
-    x: snake.x,
-    y: snake.y,
+    x: pauseX,
+    y: pauseY,
     t: snake.t,
     v: snake.v,
     xSpeed: snake.xSpeed,
