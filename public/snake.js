@@ -1,4 +1,4 @@
-function Snake(x, y, t, v, xSpeed, ySpeed) {
+function Snake(x, y, t, v, xSpeed, ySpeed, score) {
   this.x = x;
   this.y = y;
   this.xSpeed = xSpeed;
@@ -7,10 +7,26 @@ function Snake(x, y, t, v, xSpeed, ySpeed) {
   this.speed = this.initialSpeed;
   this.level = 0;
   this.t = t;
+  this.score = score;
 
   this.update = function () {
     for (var i = this.level; i > 0; i--) {
-      this.t[i] = this.t[i-1];
+      this.t[i] = this.t[i-1]; //+1
+
+      /* fix temporaneo / permanente per i food potenziati */
+      if(this.t[i-1] == null) { //+2
+        this.t[i] = this.t[i-2];
+        if(this.t[i-2] == null) { //+5
+          this.t[i-3] = this.t[i-5];
+          this.t[i-2] = this.t[i-5];
+          this.t[i-1] = this.t[i-5];
+          this.t[i] =this.t[i-5];
+          //console.log(this.t);
+          if(this.t[i-5] == null) { //x2
+            this.t[i] = this.t[i-(this.level/2)]
+          }
+        }
+      }
     }
     this.t[0] = {
       x: this.x,
@@ -40,7 +56,6 @@ function Snake(x, y, t, v, xSpeed, ySpeed) {
         this.y = 0;
       }
     }
-
   }
 
   this.show = function () {
@@ -91,36 +106,43 @@ function Snake(x, y, t, v, xSpeed, ySpeed) {
     });
     this.t = tails;
   }
-  /*
-  this.eat = function() {
-      pos = { x: this.x, y: this.y };
-      lev = this.level;
-      var snake = this;
-      foods.forEach(function(food, index) {
-          if(food.position.x == pos.x && food.position.y == pos.y) {
-              console.log(food.type);
-              switch(food.type) {
-                  case 'normal':
-                      lev = lev+1;
-                  break;
-                  case 'speed':
-                      frameRate(gamespeed*=1.5);
-                      setTimeout(function() {
-                          frameRate(gamespeed/=1.5);
-                      }, 4000)
-                  break;
-              }
-              foods.splice(index, 1);
-              generateFood();
-          }
-      });
-      this.setLevel(lev);
-      return false;
+
+  this.eat = function () {
+    pos = {
+      x: this.x,
+      y: this.y
+    };
+    lev = this.level;
+    var snake = this;
+    gameState.foods.forEach(function (food, index) {
+      if (food.x == pos.x && food.y == pos.y) {
+        //console.log('mangio un food ' + food.type + ' di index ' + index);
+        
+        switch (food.type) {
+          case 'normal':
+            lev +=1;
+            break;
+          case 'plustwo':
+            lev +=2;
+            break;
+          case 'plusfive':
+            lev +=5;
+            break;
+          case 'timestwo':
+            lev *=2;
+            break;
+        }
+        
+        socket.emit('eatFood', index);
+      }
+    });
+    this.setLevel(lev);
   }
-  */
-  this.setLevel = function(level) {
-      snake.level = level;
-      //bestScore = (bestScore>level)?bestScore:level;
+
+  this.setLevel = function (level) {
+    this.level = level;
+    this.score = level;
+    //bestScore = (bestScore>level)?bestScore:level;
   }
   /*
   this.eatHimSelf = function() {
@@ -146,11 +168,6 @@ function Snake(x, y, t, v, xSpeed, ySpeed) {
   }
   */
 
-  this.score = function() {
-      document.getElementById('score').innerHTML = 'Score: '+this.level;
-      document.getElementById('bestscore').innerHTML = 'Best Score: '+bestScore;
-  }
-  
   this.dir = function (xSpeed, ySpeed) {
     if (xSpeed * this.xSpeed == 0 || this.level == 0) {
       this.xSpeed = xSpeed;

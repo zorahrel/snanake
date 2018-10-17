@@ -38,7 +38,8 @@ function setup() {
     t: snake.t,
     v: snake.v,
     xSpeed: snake.xSpeed,
-    ySpeed: snake.ySpeed
+    ySpeed: snake.ySpeed,
+    score: snake.score
   }
   socket.emit('initializeSnake', data);
 
@@ -83,6 +84,9 @@ function draw() {
 
   scrollingCamera(snake.x, snake.y);
 
+  document.getElementById('score').innerHTML = 'Score: ' + snake.score;
+  document.getElementById('bestscore').innerHTML = 'Best Score: WIP';
+
   /*
   s.update();
 
@@ -111,13 +115,29 @@ function draw() {
         fill(205, 133, 0);
         rect(food.x, food.y, pixelUnit, pixelUnit);
         break;
-      case 'speed':
+      case 'plustwo':
+        fill(160, 160, 160);
+        rect(food.x, food.y, pixelUnit, pixelUnit);
+        fill(0);
+        textAlign(CENTER);
+        textSize(20);
+        text('+2', food.x + 15, food.y + 15 + 7.5);
+        break;
+      case 'plusfive':
         fill(0, 255, 0);
         rect(food.x, food.y, pixelUnit, pixelUnit);
         fill(0);
         textAlign(CENTER);
-        textSize(30);
-        text('s', food.x + 15, food.y + 15 + 7.5);
+        textSize(20);
+        text('+5', food.x + 15, food.y + 15 + 7.5);
+        break;
+      case 'timestwo':
+        fill(255, 0, 144);
+        rect(food.x, food.y, pixelUnit, pixelUnit);
+        fill(0);
+        textAlign(CENTER);
+        textSize(20);
+        text('x2', food.x + 15, food.y + 15 + 7.5);
         break;
     }
   }, this);
@@ -144,14 +164,16 @@ function draw() {
   }
   snake.update();
   snake.show();
+  snake.eat();
 
   for (var i = gameState.snakes.length - 1; i >= 0; i--) {
     var id = gameState.snakes[i].id;
     if (id !== socket.id) {
-      var anotherSnake = new Snake(gameState.snakes[i].x, gameState.snakes[i].y, gameState.snakes[i].t, gameState.snakes[i].v, gameState.snakes[i].xSpeed, gameState.snakes[i].ySpeed);
+      var anotherSnake = new Snake(gameState.snakes[i].x, gameState.snakes[i].y, gameState.snakes[i].t, gameState.snakes[i].v, gameState.snakes[i].xSpeed, gameState.snakes[i].ySpeed, gameState.snakes[i].score);
       
       anotherSnake.update();
       anotherSnake.show();
+      anotherSnake.eat();
       
       fill(0);
       textAlign(CENTER);
@@ -161,7 +183,7 @@ function draw() {
       fill(0);
       textAlign(CENTER);
       textSize(12);
-      text("You", gameState.snakes[i].x + 15, gameState.snakes[i].y + 40);
+      text("You", pauseX + 15, pauseY + 40);
     }
   }
 
@@ -171,7 +193,8 @@ function draw() {
     t: snake.t,
     v: snake.v,
     xSpeed: snake.xSpeed,
-    ySpeed: snake.ySpeed
+    ySpeed: snake.ySpeed,
+    score: snake.score
   }
   socket.emit('updateSnake', data);
 }
@@ -183,7 +206,7 @@ function scrollingCamera(x, y) {
 
 function mouseClicked() {
     if (focused) {
-        snake.setLevel(snake.level + 1);
+        snake.setLevel(snake.level + 5);
         console.log('level up, now your level is: ', snake.level);
     }
 }
