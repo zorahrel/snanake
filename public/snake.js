@@ -1,8 +1,8 @@
-function Snake(x, y, t, v) {
+function Snake(x, y, t, v, xSpeed, ySpeed) {
   this.x = x;
   this.y = y;
-  this.xSpeed = 0;
-  this.ySpeed = 0;
+  this.xSpeed = xSpeed;
+  this.ySpeed = ySpeed;
   this.initialSpeed = v;
   this.speed = this.initialSpeed;
   this.level = 0;
@@ -10,7 +10,7 @@ function Snake(x, y, t, v) {
 
   this.update = function () {
     for (var i = this.level; i > 0; i--) {
-      this.tails[i] = this.tails[i - 1];
+      this.t[i] = this.t[i-1];
     }
     this.t[0] = {
       x: this.x,
@@ -117,12 +117,12 @@ function Snake(x, y, t, v) {
       this.setLevel(lev);
       return false;
   }
-
+  */
   this.setLevel = function(level) {
-      s.level = level;
-      bestScore = (bestScore>level)?bestScore:level;
+      snake.level = level;
+      //bestScore = (bestScore>level)?bestScore:level;
   }
-
+  /*
   this.eatHimSelf = function() {
       var lev = this.level;
       var tails = this.tails;
@@ -144,12 +144,13 @@ function Snake(x, y, t, v) {
       
       return false;
   }
+  */
 
   this.score = function() {
       document.getElementById('score').innerHTML = 'Score: '+this.level;
       document.getElementById('bestscore').innerHTML = 'Best Score: '+bestScore;
   }
-  */
+  
   this.dir = function (xSpeed, ySpeed) {
     if (xSpeed * this.xSpeed == 0 || this.level == 0) {
       this.xSpeed = xSpeed;

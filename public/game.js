@@ -1,7 +1,10 @@
 //var paused = false;
 //var bestScore = 0;
 
-var socket, snake, snakes = [];
+var socket, snake, gameState = {
+  snakes: [],
+  foods: []
+};
 
 var initialGamespeed = 8;
 
@@ -24,7 +27,7 @@ function setup() {
   frameRate(gamespeed);
 
   socket = io.connect('http://localhost:3000');
-  snake = new Snake(random(width), random(height), [], 1);
+  snake = new Snake(random(width), random(height), [], 1, 0, 0);
   //generateFoods();
 
   //document.getElementById('pause').addEventListener('click', pause);
@@ -32,15 +35,27 @@ function setup() {
     x: snake.x,
     y: snake.y,
     t: snake.t,
-    v: snake.v
+    v: snake.v,
+    xSpeed: snake.xSpeed,
+    ySpeed: snake.ySpeed
   }
-  socket.emit('start', data);
+  socket.emit('initializeSnake', data);
 
   socket.on('heartbeat',
     function (data) {
-      snakes = data;
+      gameState.snakes = data.snakes;
+      gameState.foods = data.foods;
     }
-  )
+  );
+  /*
+  socket.on('requestingRandomPos',
+    function () {
+      do {
+        foodPos = randomPos();
+      } while (collideSnake(foodPos, gameState.snakes));
+      socket.emit('randomPos', foodPos);
+    });
+    */
 }
 
 function windowResized() {
@@ -86,18 +101,25 @@ function draw() {
   /*
   pauseModal(pauseX, pauseY);
   */
-  for (var i = snakes.length - 1; i >= 0; i--) {
-    var id = snakes[i].id;
-    if (id.substring(2, id.length) !== socket.id) {
-      fill(0, 0, 255);
-      rect(snakes[i].x, snakes[i].y, 30, 30);
+  
 
-      fill(0);
-      textAlign(CENTER);
-      textSize(12);
-      text(snakes[i].id, snakes[i].x, snakes[i].y + 38);
+  gameState.foods.forEach(function (food) {
+    switch (food.type) {
+      default:
+      case 'normal':
+        fill(205, 133, 0);
+        rect(food.x, food.y, pixelUnit, pixelUnit);
+        break;
+      case 'speed':
+        fill(0, 255, 0);
+        rect(food.x, food.y, pixelUnit, pixelUnit);
+        fill(0);
+        textAlign(CENTER);
+        textSize(30);
+        text('s', food.x + 15, food.y + 15 + 7.5);
+        break;
     }
-  }
+  }, this);
 
 
   if (keyIsPressed) {
@@ -121,50 +143,72 @@ function draw() {
   }
   snake.update();
   snake.show();
-  
+
+  for (var i = gameState.snakes.length - 1; i >= 0; i--) {
+    var id = gameState.snakes[i].id;
+    if (id !== socket.id) {
+      var anotherSnake = new Snake(gameState.snakes[i].x, gameState.snakes[i].y, gameState.snakes[i].t, gameState.snakes[i].v, gameState.snakes[i].xSpeed, gameState.snakes[i].ySpeed);
+      
+      anotherSnake.update();
+      anotherSnake.show();
+      
+      fill(0);
+      textAlign(CENTER);
+      textSize(12);
+      text(gameState.snakes[i].id, gameState.snakes[i].x + 15, gameState.snakes[i].y + 40);
+    } else {
+      fill(0);
+      textAlign(CENTER);
+      textSize(12);
+      text("You", gameState.snakes[i].x + 15, gameState.snakes[i].y + 40);
+    }
+  }
 
   var data = {
     x: snake.x,
     y: snake.y,
     t: snake.t,
-    v: snake.v
+    v: snake.v,
+    xSpeed: snake.xSpeed,
+    ySpeed: snake.ySpeed
   }
-  socket.emit('update', data);
+  socket.emit('updateSnake', data);
 }
 
 
 function scrollingCamera(x, y) {
-    translate(-x + (width / 2), -y + (height / 2));
+  translate(-x + (width / 2), -y + (height / 2));
 }
-/*
+
 function mouseClicked() {
     if (focused) {
-        s.setLevel(s.level + 1);
-        console.log('level up, now your level is: ', s.level);
+        snake.setLevel(snake.level + 1);
+        console.log('level up, now your level is: ', snake.level);
     }
 }
 
 
-
-function collideSnake(pos, snake) {
-    var collides = false;
+/*
+function collideSnake(pos, snakes) {
+  var collides = false;
+  snakes.forEach(function (snake) {
     snake.tails.forEach(function (tail) {
-        if (pos.x == tail.x && pos.y == tail.y) {
-            collides = true;
-        }
-    });
-
-    return collides;
+      if (pos.x == tail.x && pos.y == tail.y) {
+        collides = true;
+      }
+    })
+  });
+  return collides;
 }
 
 function randomPos() {
-    var cols = floor(gameWidth / pixelUnit);
-    var rows = floor(gameHeight / pixelUnit);
+  var cols = floor(gameWidth / pixelUnit);
+  var rows = floor(gameHeight / pixelUnit);
 
-    return {
-        x: floor(random(cols)) * pixelUnit,
-        y: floor(random(rows)) * pixelUnit
-    };
+  return {
+    x: floor(random(cols)) * pixelUnit,
+    y: floor(random(rows)) * pixelUnit
+  };
 }
 
 function pauseModal(x, y) {
