@@ -101,18 +101,20 @@ function draw() {
     }
 
     /* start swipe handler */
-    (new Swipe('#stage')).onLeft(function () {
-      snake.dir(-baseSpeed, 0);
-    }).run();
-    (new Swipe('#stage')).onRight(function () {
-      snake.dir(baseSpeed, 0);
-    }).run();
-    (new Swipe('#stage')).onUp(function () {
+    var swiper = new Swipe(document);
+    swiper.onUp(function () {
       snake.dir(0, -baseSpeed);
-    }).run();
-    (new Swipe('#stage')).onDown(function () {
+    });
+    swiper.onDown(function () {
       snake.dir(0, baseSpeed);
-    }).run();
+    });
+    swiper.onLeft(function () {
+      snake.dir(-baseSpeed, 0);
+    });
+    swiper.onRight(function () {
+      snake.dir(baseSpeed, 0);
+    });
+    swiper.run();
     /* end swipe handler */
 
     snake.update();
