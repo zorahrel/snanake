@@ -23,7 +23,7 @@ function setup() {
   stage.parent('stage');
   frameRate(gamespeed);
 
-  socket = io.connect('http://localhost:3000');
+  socket = io.connect(window.location.hostname);
 
   var snakePos = randomPos();
   snake = new Snake('self', snakePos.x, snakePos.y, [], 1, 0, 0, 0, 0);
