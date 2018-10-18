@@ -30,8 +30,9 @@ function Food(type, x, y) {
   this.y = y;
 }
 
-function Snake(id, x, y, t, v, xSpeed, ySpeed, score, bestScore) {
+function Snake(id, name, x, y, t, v, xSpeed, ySpeed, score, bestScore) {
   this.id = id;
+  this.name = name;
   this.x = x;
   this.y = y;
   this.t = t;
@@ -87,7 +88,7 @@ io.sockets.on('connection',
 
     socket.on('initializeSnake',
       function (data) {
-        var snake = new Snake(socket.id, data.x, data.y, data.t, data.v, data.xSpeed, data.ySpeed, data.score, data.bestScore);
+        var snake = new Snake(socket.id, data.name, data.x, data.y, data.t, data.v, data.xSpeed, data.ySpeed, data.score, data.bestScore);
         gameState.snakes.push(snake);
       }
     );
@@ -100,6 +101,7 @@ io.sockets.on('connection',
             snake = gameState.snakes[i];
           }
         }
+        snake.name = data.name;
         snake.x = data.x;
         snake.y = data.y;
         snake.t = data.t;

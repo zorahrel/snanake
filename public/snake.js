@@ -1,5 +1,6 @@
-function Snake(id, x, y, t, v, xSpeed, ySpeed, score, bestScore) {
+function Snake(id, name, x, y, t, v, xSpeed, ySpeed, score, bestScore) {
   this.id = id;
+  this.name = name;
   this.x = x;
   this.y = y;
   this.xSpeed = xSpeed;
