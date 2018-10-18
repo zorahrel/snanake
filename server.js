@@ -57,7 +57,7 @@ function listen() {
 app.use(express.static('public'));
 var io = require('socket.io')(server);
 
-setInterval(heartbeat, 7);
+setInterval(heartbeat, 33);
 
 function heartbeat() {
   io.sockets.emit('heartbeat', gameState);
