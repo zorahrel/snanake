@@ -1,6 +1,3 @@
-//var paused = false;
-//var bestScore = 0;
-
 var socket, snake, gameState = {
   snakes: [],
   foods: []
@@ -29,9 +26,8 @@ function setup() {
   socket = io.connect('http://localhost:3000');
 
   var snakePos = randomPos();
-  snake = new Snake(snakePos.x, snakePos.y, [], 1, 0, 0);
+  snake = new Snake('self', snakePos.x, snakePos.y, [], 1, 0, 0, 0, 0);
 
-  //document.getElementById('pause').addEventListener('click', pause);
   var data = {
     x: snake.x,
     y: snake.y,
@@ -39,7 +35,8 @@ function setup() {
     v: snake.v,
     xSpeed: snake.xSpeed,
     ySpeed: snake.ySpeed,
-    score: snake.score
+    score: snake.score,
+    bestScore: snake.bestScore
   }
   socket.emit('initializeSnake', data);
 
@@ -49,64 +46,30 @@ function setup() {
       gameState.foods = data.foods;
     }
   );
-  
-  socket.on('requestingRandomPos',
-    function () {
-      do {
-        foodPos = randomPos();
-      } while (collideSnake(foodPos, gameState.snakes));
-      socket.emit('randomPos', foodPos);
-    });
-  
 }
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
 }
-/*
-function pause() {
-    if (paused) {
-        loop();
-        paused = false;
-        console.log('Unpaused');
-    } else {
-        noLoop();
-        paused = true;
-        console.log('Paused');
-    }
-}
-*/
+
 function draw() {
   background(255);
 
-  var pauseX = snake.x;
-  var pauseY = snake.y; // mantengo salvata la posizione del verme prima dell'update per centrale la modale della pausa
+  var previousX = snake.x;
+  var previousY = snake.y; // mantengo salvata la posizione del verme prima dell'update per centrale la modale della pausa
 
   scrollingCamera(snake.x, snake.y);
 
   document.getElementById('score').innerHTML = 'Score: ' + snake.score;
-  document.getElementById('bestscore').innerHTML = 'Best Score: WIP';
+  document.getElementById('bestscore').innerHTML = 'Best Score: ' + snake.bestScore;
 
-  /*
-  s.update();
-
-  s.show();
-  showFood();
-
-  s.eat();
-  s.eatHimSelf();
-  s.score();
-  */
   // create border game line
   noFill();
   strokeWeight(1);
   stroke(0);
   rect(-1, -1, gameWidth + 1, gameHeight + 1);
   stroke(0); //reset bordo nero      
-  /*
-  pauseModal(pauseX, pauseY);
-  */
-  
+
 
   gameState.foods.forEach(function (food) {
     switch (food.type) {
@@ -157,24 +120,24 @@ function draw() {
       case LEFT_ARROW:
         snake.dir(-baseSpeed, 0);
         break;
-      case 80: // Letter P
-        /*pause();*/
-        break;
     }
   }
   snake.update();
   snake.show();
   snake.eat();
+  snake.eatSelf();
+  snake.eatSnake();
 
   for (var i = gameState.snakes.length - 1; i >= 0; i--) {
     var id = gameState.snakes[i].id;
     if (id !== socket.id) {
-      var anotherSnake = new Snake(gameState.snakes[i].x, gameState.snakes[i].y, gameState.snakes[i].t, gameState.snakes[i].v, gameState.snakes[i].xSpeed, gameState.snakes[i].ySpeed, gameState.snakes[i].score);
-      
+      var anotherSnake = new Snake(id, gameState.snakes[i].x, gameState.snakes[i].y, gameState.snakes[i].t, gameState.snakes[i].v, gameState.snakes[i].xSpeed, gameState.snakes[i].ySpeed, gameState.snakes[i].score, gameState.snakes[i].bestScore);
+
       anotherSnake.update();
       anotherSnake.show();
       anotherSnake.eat();
-      
+      anotherSnake.eatSelf();
+
       fill(0);
       textAlign(CENTER);
       textSize(12);
@@ -183,13 +146,13 @@ function draw() {
       fill(0);
       textAlign(CENTER);
       textSize(12);
-      text("You", pauseX + 15, pauseY + 40);
+      text("You", previousX + 15, previousY + 40);
     }
   }
 
   var data = {
-    x: pauseX,
-    y: pauseY,
+    x: previousX,
+    y: previousY,
     t: snake.t,
     v: snake.v,
     xSpeed: snake.xSpeed,
@@ -204,13 +167,6 @@ function scrollingCamera(x, y) {
   translate(-x + (width / 2), -y + (height / 2));
 }
 
-function mouseClicked() {
-    if (focused) {
-        snake.setLevel(snake.level + 5);
-        console.log('level up, now your level is: ', snake.level);
-    }
-}
-
 function randomPos() {
   var cols = Math.floor(gameWidth / pixelUnit);
   var rows = Math.floor(gameHeight / pixelUnit);
@@ -220,29 +176,17 @@ function randomPos() {
     y: Math.floor(random(rows)) * pixelUnit
   };
 }
-/*
-function collideSnake(pos, snakes) {
+
+function collideSnake(pos, killerId) {
   var collides = false;
-  snakes.forEach(function (snake) {
-    snake.tails.forEach(function (tail) {
-      if (pos.x == tail.x && pos.y == tail.y) {
-        collides = true;
-      }
-    })
+  gameState.snakes.forEach(function (snake) {
+    if (snake.id !== killerId) {
+      snake.t.forEach(function (tail) {
+        if (pos.x == tail.x && pos.y == tail.y) {
+          collides = true;
+        }
+      })
+    }
   });
   return collides;
 }
-*/
-
-/*
-function pauseModal(x, y) {
-    if (paused) {
-        fill('rgba(255,255,255, 0.5)');
-
-        rect(x - (width / 2), y - (height / 2), width, height);
-        fill(0, 255, 0);
-        textSize(30);
-        textAlign(RIGHT);
-        text("Game is paused", x + (width / 2) - 30, y + (height / 2) - 30);
-    }
-}*/

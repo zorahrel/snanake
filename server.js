@@ -30,7 +30,7 @@ function Food(type, x, y) {
   this.y = y;
 }
 
-function Snake(id, x, y, t, v, xSpeed, ySpeed, score) {
+function Snake(id, x, y, t, v, xSpeed, ySpeed, score, bestScore) {
   this.id = id;
   this.x = x;
   this.y = y;
@@ -39,6 +39,7 @@ function Snake(id, x, y, t, v, xSpeed, ySpeed, score) {
   this.xSpeed = xSpeed;
   this.ySpeed = ySpeed;
   this.score = score;
+  this.bestScore = bestScore;
 }
 
 var express = require('express');
@@ -53,10 +54,9 @@ function listen() {
 }
 
 app.use(express.static('public'));
-
 var io = require('socket.io')(server);
 
-setInterval(heartbeat, 33);
+setInterval(heartbeat, 7);
 
 function heartbeat() {
   io.sockets.emit('heartbeat', gameState);
@@ -75,14 +75,11 @@ function generateFoods() {
   for (var i = 0; i < foodOnStage; i++) {
     if (gameState.foods.length < foodOnStage) {
       var np = randomPos();
-      //console.log(newrandomfoodpos);
       var food = new Food(getRandomFoodType(), np.x, np.y);
       gameState.foods.push(food);
     }
   }
 }
-
-
 
 io.sockets.on('connection',
   function (socket) {
@@ -90,7 +87,7 @@ io.sockets.on('connection',
 
     socket.on('initializeSnake',
       function (data) {
-        var snake = new Snake(socket.id, data.x, data.y, data.t, data.v, data.xSpeed, data.ySpeed, data.score);
+        var snake = new Snake(socket.id, data.x, data.y, data.t, data.v, data.xSpeed, data.ySpeed, data.score, data.bestScore);
         gameState.snakes.push(snake);
       }
     );
@@ -110,12 +107,12 @@ io.sockets.on('connection',
         snake.xSpeed = data.xSpeed;
         snake.ySpeed = data.ySpeed;
         snake.score = data.score;
+        snake.bestScore = data.bestScore;
       }
     );
 
     socket.on('eatFood',
       function (index) {
-        console.log('ho mangiato qualcosa :O');
         gameState.foods.splice(index, 1);
       });
 
@@ -133,7 +130,6 @@ io.sockets.on('connection',
 function randomPos() {
   var cols = Math.floor(gameWidth / pixelUnit);
   var rows = Math.floor(gameHeight / pixelUnit);
-  //console.log((Math.random() * cols) + 1);
   return {
     x: Math.floor((Math.random() * cols)) * pixelUnit,
     y: Math.floor((Math.random() * rows)) * pixelUnit

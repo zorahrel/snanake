@@ -1,4 +1,5 @@
-function Snake(x, y, t, v, xSpeed, ySpeed, score) {
+function Snake(id, x, y, t, v, xSpeed, ySpeed, score, bestScore) {
+  this.id = id;
   this.x = x;
   this.y = y;
   this.xSpeed = xSpeed;
@@ -8,6 +9,7 @@ function Snake(x, y, t, v, xSpeed, ySpeed, score) {
   this.level = 0;
   this.t = t;
   this.score = score;
+  this.bestScore = bestScore;
 
   this.update = function () {
     for (var i = this.level; i > 0; i--) {
@@ -73,7 +75,6 @@ function Snake(x, y, t, v, xSpeed, ySpeed, score) {
       if (index == 0 && index + 1 == tails.length) { // Pezzo unico
         type = 'one';
       }
-
       // Body draw
       switch (type) {
         case 'head':
@@ -81,7 +82,11 @@ function Snake(x, y, t, v, xSpeed, ySpeed, score) {
           break;
         case 'body':
         case 'tail':
-          fill(100, 0, 100);
+          if(that.id === 'self') {
+            fill(100, 0, 100);
+          } else {
+            fill(135,206,250);
+          }
           break;
         case 'one':
           fill(255, 255, 0);
@@ -113,11 +118,8 @@ function Snake(x, y, t, v, xSpeed, ySpeed, score) {
       y: this.y
     };
     lev = this.level;
-    var snake = this;
     gameState.foods.forEach(function (food, index) {
       if (food.x == pos.x && food.y == pos.y) {
-        //console.log('mangio un food ' + food.type + ' di index ' + index);
-        
         switch (food.type) {
           case 'normal':
             lev +=1;
@@ -142,12 +144,12 @@ function Snake(x, y, t, v, xSpeed, ySpeed, score) {
   this.setLevel = function (level) {
     this.level = level;
     this.score = level;
-    //bestScore = (bestScore>level)?bestScore:level;
+    this.bestScore = (this.bestScore>level)?this.bestScore:level;
   }
-  /*
-  this.eatHimSelf = function() {
+  
+  this.eatSelf = function() {
       var lev = this.level;
-      var tails = this.tails;
+      var tails = this.t;
       for(var i=0; i<tails.length-1; i++) {
           if(i==0) {
               continue;
@@ -157,16 +159,19 @@ function Snake(x, y, t, v, xSpeed, ySpeed, score) {
                   tails = tails.splice(0, iB);
               }
               lev = i;
-              console.log('cazz, megg magnat a cor');
               break;
           }
       }
-      this.tails = tails;
+      this.t = tails;
       this.level = lev;
-      
-      return false;
   }
-  */
+  
+  this.eatSnake = function() {
+    if(collideSnake({x: this.t[0].x, y: this.t[0].y}, socket.id)){
+      alert("GAME OVER");
+      document.location.reload();
+    }
+  }
 
   this.dir = function (xSpeed, ySpeed) {
     if (xSpeed * this.xSpeed == 0 || this.level == 0) {
