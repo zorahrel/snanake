@@ -169,8 +169,9 @@ function Snake(id, name, x, y, t, v, xSpeed, ySpeed, score, bestScore) {
   
   this.eatSnake = function() {
     if(collideSnake({x: this.t[0].x, y: this.t[0].y}, socket.id)){
-      alert("GAME OVER");
-      document.location.reload();
+      snake = undefined;
+      socket.emit('deleteSnake', socket.id);
+      document.getElementById('deathAlert').style.display = "block";
     }
   }
 

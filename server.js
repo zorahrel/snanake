@@ -118,6 +118,14 @@ io.sockets.on('connection',
         gameState.foods.splice(index, 1);
       });
 
+    socket.on('deleteSnake', function(target){
+      for (var i = 0; i < gameState.snakes.length; i++) {
+        if (gameState.snakes[i].id == target) {
+          gameState.snakes.splice(i, 1);
+        }
+      }
+      console.log(target + " has died");
+    })
     socket.on('disconnect', function () {
       for (var i = 0; i < gameState.snakes.length; i++) {
         if (gameState.snakes[i].id == socket.id) {

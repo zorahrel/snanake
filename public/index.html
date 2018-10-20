@@ -20,11 +20,16 @@
       <div id="score">Score: 0</div>
       <div id="bestscore">Best Score: 0</div>
     </div>
-    <div id="snakeInitializer">
+    <div id="snakeInitializer" class="popup">
       <p>This is a one time thing. If you wish to reset those parameters you'll need to reset the page.</p>
-      Name: <input type="text" id="nameText" value="" />
+      Name (max 18 characters): <input type="text" id="nameText" maxlength="18" value="" />
       <br /><br />
       <button id="setSnake" disabled>submit</button> <!-- I assume nameText is empty at pageload so I made it disabled -->
+    </div>
+    <div id="deathAlert" class="popup" style="display: none">
+      You dead
+      <br /><br />
+      <button onclick="window.location.reload()">restart</button>
     </div>
   </div>
   <div id="stage"></div>

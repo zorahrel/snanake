@@ -23,8 +23,8 @@ function setup() {
   stage.parent('stage');
   frameRate(gamespeed);
 
-  socket = io.connect(window.location.hostname);
-  //socket = io.connect('http://localhost:3000');
+  //socket = io.connect(window.location.hostname);
+  socket = io.connect('http://localhost:3000');
 
   var textName = document.getElementById('nameText');
 
@@ -41,7 +41,7 @@ function setup() {
   document.getElementById('setSnake').onclick = function () {
     this.parentNode.parentNode.removeChild(this.parentNode); // rimuovi il popup
     var snakePos = randomPos();
-    snake = new Snake('self', textName.value, snakePos.x, snakePos.y, [], 1, 0, 0, 0, 0);
+    snake = new Snake('self', textName.value.substring(0, 18), snakePos.x, snakePos.y, [], 1, 0, 0, 0, 0);
 
     var data = {
       name: snake.name,
@@ -76,12 +76,31 @@ function draw() {
 
   if (typeof snake !== 'undefined') {
     var previousX = snake.x;
-    var previousY = snake.y; // mantengo salvata la posizione del verme prima dell'update per centrale la modale della pausa
+    var previousY = snake.y;
 
     scrollingCamera(snake.x, snake.y);
 
     document.getElementById('score').innerHTML = 'Score: ' + snake.score;
     document.getElementById('bestscore').innerHTML = 'Best Score: ' + snake.bestScore;
+
+    snake.update();
+    snake.show();
+
+    var data = {
+      name: snake.name,
+      x: previousX,
+      y: previousY,
+      t: snake.t,
+      v: snake.v,
+      xSpeed: snake.xSpeed,
+      ySpeed: snake.ySpeed,
+      score: snake.score
+    }
+    socket.emit('updateSnake', data);
+
+    snake.eat();
+    snake.eatSelf();
+    snake.eatSnake();
 
     if (keyIsPressed) {
       switch (keyCode) {
@@ -116,23 +135,6 @@ function draw() {
     });
     swiper.run();
     /* end swipe handler */
-
-    snake.update();
-    snake.show();
-    snake.eat();
-    snake.eatSelf();
-    snake.eatSnake();
-    var data = {
-      name: snake.name,
-      x: previousX,
-      y: previousY,
-      t: snake.t,
-      v: snake.v,
-      xSpeed: snake.xSpeed,
-      ySpeed: snake.ySpeed,
-      score: snake.score
-    }
-    socket.emit('updateSnake', data);
   }
 
   // draw other snakes
@@ -200,7 +202,6 @@ function draw() {
   rect(-1, -1, gameWidth + 1, gameHeight + 1);
   stroke(0); //reset bordo nero     
 }
-
 
 function scrollingCamera(x, y) {
   translate(-x + (width / 2), -y + (height / 2));

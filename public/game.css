@@ -25,16 +25,19 @@ body {
     z-index: 1;
 }
 
-#snakeInitializer {
+.popup {
+    position: absolute;
     background: #FFFFFF;
     text-align: center;
     padding: 20px;
     border: solid 1px #000;
-    width: 500px;
-    height: 250px;
+    width: 100%;
+
+    top: 50%;
+   -ms-transform: translateY(-50%);
+   -webkit-transform: translateY(-50%);
+   -moz-transform: translateY(-50%);
+   -o-transform: tranlslateY(-50%);
+    transform: translateY(-50%);
     
-    position:absolute; /*it can be fixed too*/
-        left:0; right:0;
-        top:0; bottom:0;
-        margin:auto;
 }
