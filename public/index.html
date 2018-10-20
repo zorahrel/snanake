@@ -22,14 +22,14 @@
     </div>
     <div id="snakeInitializer" class="popup">
       <p>This is a one time thing. If you wish to reset those parameters you'll need to reset the page.</p>
-      Name (max 18 characters): <input type="text" id="nameText" maxlength="18" value="" />
-      <br /><br />
-      <button id="setSnake" disabled>submit</button> <!-- I assume nameText is empty at pageload so I made it disabled -->
+      <p>Name (max 18 characters): <input type="text" id="nameText" maxlength="18" value="" /></p>
+
+      <p><button id="setSnake" disabled>submit</button></p> <!-- I assume nameText is empty at pageload so I made it disabled -->
     </div>
     <div id="deathAlert" class="popup" style="display: none">
-      You dead
-      <br /><br />
-      <button onclick="window.location.reload()">restart</button>
+      <p>You dead</p>>
+      
+      <p><button onclick="window.location.reload()">restart</button></p>
     </div>
   </div>
   <div id="stage"></div>
