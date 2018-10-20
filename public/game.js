@@ -23,8 +23,8 @@ function setup() {
   stage.parent('stage');
   frameRate(gamespeed);
 
-  //socket = io.connect(window.location.hostname);
-  socket = io.connect('http://localhost:3000');
+  socket = io.connect(window.location.hostname);
+  //socket = io.connect('http://localhost:3000');
 
   var textName = document.getElementById('nameText');
 
