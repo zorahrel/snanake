@@ -27,6 +27,7 @@ function setup() {
   //socket = io.connect('http://localhost:3000');
 
   var textName = document.getElementById('nameText');
+  var colorPicker = document.getElementById('colorPicker');
 
   ['change', 'keyup', 'paste'].forEach(function (e) {
     textName.addEventListener(e, function () {
@@ -39,9 +40,9 @@ function setup() {
   });
 
   document.getElementById('setSnake').onclick = function () {
-    this.parentNode.parentNode.removeChild(this.parentNode); // rimuovi il popup
+    this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode); // rimuovi il popup
     var snakePos = randomPos();
-    snake = new Snake('self', textName.value.substring(0, 18), snakePos.x, snakePos.y, [], 1, 0, 0, 0, 0);
+    snake = new Snake('self', textName.value.substring(0, 18), colorPicker.value, snakePos.x, snakePos.y, [], 1, 0, 0, 0, 0);
 
     var data = {
       name: snake.name,
@@ -88,6 +89,7 @@ function draw() {
 
     var data = {
       name: snake.name,
+      color: snake.color,
       x: previousX,
       y: previousY,
       t: snake.t,
@@ -141,7 +143,7 @@ function draw() {
   for (var i = gameState.snakes.length - 1; i >= 0; i--) {
     var id = gameState.snakes[i].id;
     if (id !== socket.id) {
-      var anotherSnake = new Snake(id, gameState.snakes[i].name, gameState.snakes[i].x, gameState.snakes[i].y, gameState.snakes[i].t, gameState.snakes[i].v, gameState.snakes[i].xSpeed, gameState.snakes[i].ySpeed, gameState.snakes[i].score, gameState.snakes[i].bestScore);
+      var anotherSnake = new Snake(id, gameState.snakes[i].name, gameState.snakes[i].color, gameState.snakes[i].x, gameState.snakes[i].y, gameState.snakes[i].t, gameState.snakes[i].v, gameState.snakes[i].xSpeed, gameState.snakes[i].ySpeed, gameState.snakes[i].score, gameState.snakes[i].bestScore);
 
       anotherSnake.update();
       anotherSnake.show();
@@ -229,4 +231,13 @@ function collideSnake(pos, killerId) {
     }
   });
   return collides;
+}
+
+function hextorgb(hex) {
+  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16)
+  } : null;
 }

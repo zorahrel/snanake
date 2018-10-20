@@ -22,8 +22,8 @@
     </div>
     <div id="snakeInitializer" class="popup">
       <p>This is a one time thing. If you wish to reset those parameters you'll need to reset the page.</p>
-      <p>Name (max 18 characters): <input type="text" id="nameText" maxlength="18" value="" /></p>
-
+      <p>Name (max 18 characters): <br /><input type="text" id="nameText" style="border: 1px solid #CCCCCC !important;" maxlength="18" value="" /></p>
+      <p>Tail color: <input id="colorPicker" type="color"/></p>
       <p><button id="setSnake" disabled>submit</button></p> <!-- I assume nameText is empty at pageload so I made it disabled -->
     </div>
     <div id="deathAlert" class="popup" style="display: none">

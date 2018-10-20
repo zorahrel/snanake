@@ -1,6 +1,7 @@
-function Snake(id, name, x, y, t, v, xSpeed, ySpeed, score, bestScore) {
+function Snake(id, name, color, x, y, t, v, xSpeed, ySpeed, score, bestScore) {
   this.id = id;
   this.name = name;
+  this.color = color;
   this.x = x;
   this.y = y;
   this.xSpeed = xSpeed;
@@ -83,11 +84,7 @@ function Snake(id, name, x, y, t, v, xSpeed, ySpeed, score, bestScore) {
           break;
         case 'body':
         case 'tail':
-          if(that.id === 'self') {
-            fill(100, 0, 100);
-          } else {
-            fill(135,206,250);
-          }
+          fill(hextorgb(that.color).r, hextorgb(that.color).g, hextorgb(that.color).b);
           break;
         case 'one':
           fill(255, 255, 0);
