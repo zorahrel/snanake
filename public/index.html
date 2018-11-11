@@ -9,8 +9,6 @@
   <script type="text/javascript" src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
   <script language="javascript" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.1/p5.js"></script>
   <script language="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.1/addons/p5.dom.js"></script>
-  <script src="snake.js"></script>
-  <script src="game.js"></script>
 </head>
 
 <body>
@@ -19,8 +17,42 @@
       <div id="score">Score: 0</div>
       <div id="bestscore">Best Score: 0</div>
     </div>
+    <div id="snakeInitializer" class="popup">
+      <p>This is a one time thing. If you wish to reset those parameters you'll need to reset the page.</p>
+      <p>Name (max 18 characters): <br /><input type="text" id="nameText" style="border: 1px solid #CCCCCC !important;"
+          maxlength="18" value="" /></p>
+      <p>Tail color: <input id="colorPicker" type="color" /></p>
+      <p><button id="setSnake" disabled>submit</button></p>
+      <!-- I assume nameText is empty at pageload so I made it disabled -->
+    </div>
+    <div id="deathAlert" class="popup" style="display: none">
+      <p>You dead</p>
+
+      <p><button onclick="window.location.reload()">restart</button></p>
+    </div>
+    <div class="bottom">
+      <button id="openLeaderboard">Leaderboard</button>
+    </div>
+    <div id="leaderboard" style="display: none;">
+      <h3>Top 20</h3>
+      <h5>This will lasts until server restart because of no way of storing things so I save it in the gameState.</h5>
+      <div id="listcaptions" style="width: 250px;">
+        <div>
+          <div id='leaderboardTrophy'></div>
+          <div id='leaderboardName'>Name</div>
+          <div id='leaderboardScore'>Score</div>
+        </div>
+      </div>
+      <div id="listcontainer" style="width: 250px;">
+
+      </div>
+    </div>
   </div>
   <div id="stage"></div>
+
+  <script src="swipe.js"></script>
+  <script src="snake.js"></script>
+  <script src="game.js"></script>
 </body>
 
 </html>

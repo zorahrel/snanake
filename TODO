@@ -1,0 +1,4 @@
+- remove multipliers and replace them with following types: normal and poison
+    poison will kill your snake / max 4 
+- set up a score limit, once a player reaches it all snakes are killed showing a popup saying the winner
+- solve issue #3
